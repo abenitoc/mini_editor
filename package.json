@@ -1,5 +1,5 @@
 {
-  "name": "vish_editor",
+  "name": "mini_editor",
   "version": "1.0.0",
   "description": "HTML5 application to create web presentations in a simple and friendly way",
   "main": "VISH.js",
