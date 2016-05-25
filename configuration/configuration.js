@@ -117,7 +117,7 @@ var getOptions = function(){
 		// 		"i.Settings"	: "Ajustes"
 		// 	}
 		// }
-
+		
 		////////////////////
 		// Apply a custom VE theme
 		///////////////////
