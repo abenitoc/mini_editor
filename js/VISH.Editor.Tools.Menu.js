@@ -216,6 +216,66 @@ VISH.Editor.Tools.Menu = (function(V,$,undefined){
 		V.Utils.showDialog(options);
 	};
 
+	var onAddToLOCatalog = function(){
+		/* Check if object is empty */
+		if(V.Slides.getSlides().length === 0){
+			var options = {};
+			options.width = 600;
+			options.height = 150;
+			options.text = V.I18n.getTrans("i.NoSlidesOnSaveNotification");
+			var button1 = {};
+			button1.text = V.I18n.getTrans("i.Ok");
+			button1.callback = function(){
+				$.fancybox.close();
+			}
+			options.buttons = [button1];
+			V.Utils.showDialog(options);
+			return;
+		}
+
+		/* Send LO to database so it can be used as SCORMFILE*/
+		var options = {};
+		options.width = 600;
+		options.height = 200;
+		
+		options.text = "Do you want to publish it as a Course?";
+		options.buttons = [];
+
+		var button1 = {};
+		button1.text = V.I18n.getTrans("i.cancel");
+		button1.callback = function(){
+			$.fancybox.close();
+		}
+		options.buttons.push(button1);
+
+		var button2 = {};
+		button2.text = V.I18n.getTrans("i.publish");
+
+		button2.callback = function(){
+			V.Editor.Tools.changePublishButtonStatus("publishing");
+			var presentation = V.Editor.savePresentation();
+			V.Editor.sendPresentation(presentation,"publish", function(data){
+				//onSuccess
+				if(V.Debugging.isDevelopping()){
+					V.Editor.Preview.preview();
+					V.Editor.Tools.changePublishButtonStatus("unpublish");
+				} else {
+					if((typeof data == "object")&&(typeof data.url == "string")){
+						V.Editor.Events.allowExitWithoutConfirmation();
+						window.top.location.href = data.url;
+					}
+				}
+			}, function(){
+				//onFail
+				V.Editor.Tools.changePublishButtonStatus("publish");
+			});
+			$.fancybox.close();
+		}
+		options.buttons.push(button2);
+
+		V.Utils.showDialog(options);
+	};
+
 	var onUnpublishButtonClicked = function(){
 		var options = {};
 		options.width = 600;
@@ -475,6 +535,7 @@ VISH.Editor.Tools.Menu = (function(V,$,undefined){
 		exportToSCORM12					: exportToSCORM12,
 		exportToSCORM2004				: exportToSCORM2004,
 		displaySettings					: displaySettings,
+		onAddToLOCatalog				: onAddToLOCatalog,
 		onPublishButtonClicked			: onPublishButtonClicked,
 		onUnpublishButtonClicked		: onUnpublishButtonClicked,
 		notifyTeacherClicked			: notifyTeacherClicked, 
